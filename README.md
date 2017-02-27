@@ -13,6 +13,7 @@ This is a small command line tool written in Python that prepares sound packs fo
 * Renames files to ensure 8.3 names (no clever shortening, just sequential naming of the files)
 * Creates compatible folder structure (16 folders with 75 files max, no more than 330 files in total)
 * Splits sound packs with more files across multiple volumes, ie multiple SD cards.
+* Batch process local audio files.
 
 ### What it doesn't do
 
@@ -43,9 +44,12 @@ Select a profile, this defines settings for the module (see the **profiles** key
 
 ![project/select-profile.png](project/select-profile.png)
 
+### Select Origin of Content
+Select if the audio content to process is local or to be downloaded from an online location.  If "Local" is selected, you will be asked to enter a name for the output folder.
+
 ### Select Sound Set
 
-The tool lists all configured sample packs with number of samples and the size of the archive (NB: This is the filesize of the WAVs, after conversion the resulting files will likely be half that).
+This will show only if "Online" was selected in the previous step.  The tool lists all configured sample packs with number of samples and the size of the archive (NB: This is the filesize of the WAVs, after conversion the resulting files will likely be half that).
 
 **Enter the number of the sample pack you want to create:**
 
@@ -70,6 +74,7 @@ The file [config.json](config.json) configures a few things. More documentation 
 * **maxFilesPerFolder** sets the maximum number of files per folder the Radio Music can handle. *Default: 75*
 * **overwriteConvertedFiles** determines whether ffmpeg is instructed to overwrite existing (RAW) files when converting. *Default: true*
 * **mode** determines how files are spread across folders and multiple volumes (large sample packs with more than 330 files can span multiple cards). *Default: "spreadAcrossVolumes"*
+* **localSource** set the path where the local files to be converted are located.  *Default: "./input/"*
 	* **convertOnly** keeps the folder structure of the sample pack, files are only copied, RAW files are converted to WAV. Settings are only written if the pack doesn't already contains a ``settings.txt`` file.
 	* **spreadAcrossBanks** spreads all the files from a sample pack evenly across the banks (330 at the most), this is mostly useful with less than 330 files.
 	* **spreadAcrossVolumes** spreads all the files from a sample pack evenly across the number of volumes required - this should give you the best overall result for large banks.
@@ -89,6 +94,10 @@ A sample pack is defined by the following properties:
 * **source** optional URL for the sample pack's website (not used anywhere yet)
 * **mode** Allows overriding the mode set in the profile, set to ``convertOnly`` for sample packs you only want to convert without changing the folder structure.
 * **path** specifies the path to the numbered sample folders within the archive, this is treated as the root folder of the sample pack.
+
+## Local content conversion
+
+All local audio files to be converted should be placed in the folder assigned in the config.json file.  By default, you have to create a folder called "input" next to the create.py file.  Supported files are WAV, AIF, MP3, MP4, M4A and OGG.
 
 ### Example 1: Regular *Music Radar* archive
 
@@ -121,11 +130,10 @@ This is a zip file containing a curated collection of sounds - the app will keep
 
 ## Roadmap
 
-* Allow selection of local folder instead of a repo entry
 * Add download progress info, check whether pywget is better suited than urllib2
 * Fix wording, is it a sound pack, a sound set, or what?
 
 ## Notes
 
 * This has currently been tested on OS X only
-* The script uses ffmpeg to convert WAV to RAW files, this can probably be changed to use [SoX](sox.sourceforge.net) quite easily
+* The script uses ffmpeg to convert WAV, AIF, MP3, MP4, M4A and OGG to RAW files, this can probably be changed to use [SoX](sox.sourceforge.net) quite easily
